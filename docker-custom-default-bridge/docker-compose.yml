@@ -1,0 +1,33 @@
+networks:
+  default:
+    name: internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16
+          gateway: 172.10.0.1
+
+
+services:
+  # Container with static IP address
+  whoami-static:
+    image: traefik/whoami
+    container_name: whoami-static
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      TZ: $TZ
+    networks:
+      default:
+        ipv4_address: 172.10.0.50
+
+  # Container IP address will be assigned by Docker
+  whoami-auto:
+    image: traefik/whoami
+    container_name: whoami-auto
+    restart: unless-stopped
+    ports:
+      - "81:80"
+    environment:
+      TZ: $TZ
