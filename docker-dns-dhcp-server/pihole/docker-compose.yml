@@ -1,0 +1,50 @@
+networks:
+  default:
+    name: internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16
+          gateway: 172.10.0.1
+
+secrets:
+  pihole_admin_password:
+    file: $SECRETS/pihole_admin_password
+
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    volumes:
+      - $APPDATA/pihole/pihole/:/etc/pihole/
+      - $APPDATA/pihole/dnsmasq.d/:/etc/dnsmasq.d/
+    environment:
+      TZ: $TZ
+      FTLCONF_REPLY_ADDR4: $SERVER_IP
+      PIHOLE_DNS_: 9.9.9.9;149.112.112.112
+      WEBPASSWORD_FILE: /run/secrets/pihole_admin_password
+    secrets:
+      - pihole_admin_password
+    networks:
+      default:
+        ipv4_address: $INTERNAL_PIHOLE_IP
+
+  dhcphelper:
+    image: homeall/dhcphelper:latest
+    container_name: dhcphelper
+    restart: unless-stopped
+    environment:
+      IP: $INTERNAL_PIHOLE_IP
+      TZ: $TZ
+    depends_on:
+      - pihole
+    cap_add:
+      - NET_ADMIN
+    network_mode: host

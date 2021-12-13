@@ -16,7 +16,7 @@ SERVER2\_LOCAL\_IP|local IP of server2, must be in SERVER2\_LOCAL\_NETWORK|192.1
 1. Copy `server1` contents to `/docker` directory on first server
 2. Copy `server2` contents to `/docker` directory on second server
 3. Update timezone in both `/docker/.env` files
-4. On `server1` start containers using `docker compose`
+4. On `server1` start containers using `docker-compose`
     ```shell
     cd /docker
     docker-compose up -d
@@ -101,5 +101,6 @@ Solution is to use [service, that will periodically reresolve endpoint DNS](http
 
 ## Sources
 https://serverfault.com/questions/1066557/site2site-wireguard-with-docker-routing-problems
+
 https://serverfault.com/questions/201972/linux-gateway-not-forwarding-packets
 
