@@ -1,0 +1,45 @@
+networks:
+  default:
+    name: internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16
+          gateway: 172.10.0.1
+
+services:
+  ntp:
+    image: cturra/ntp:latest
+    container_name: ntp
+    restart: always
+    ports:
+      - "123:123/udp"
+    environment:
+      NTP_SERVERS: pool.ntp.org
+      LOG_LEVEL: 0
+      TZ: $TZ
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - $APPDATA/mosquitto/config:/mosquitto/config
+      - $APPDATA/mosquitto/data:/mosquitto/data
+      - $APPDATA/mosquitto/log:/mosquitto/log
+    environment:
+      TZ: $TZ
+
+  tasmoadmin:
+    image: raymondmm/tasmoadmin
+    container_name: tasmoadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - $APPDATA/tasmoadmin:/data
+    environment:
+      TZ: $TZ
