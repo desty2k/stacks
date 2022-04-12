@@ -1,4 +1,4 @@
-# Contenerized Wireguard Site-to-Site
+# Pi-Hole DNS + DHCP in bridge mode
 
 ## Installation
 
